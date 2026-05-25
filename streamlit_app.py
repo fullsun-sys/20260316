@@ -185,11 +185,6 @@ with col1:
     ax.text(x_point + 0.2, y_point / 2, f'y = {y_display}', 
             fontsize=10, ha='left', color='green', weight='bold',
             bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.7))
-    mid_x = x_point / 2 - 0.15
-    mid_y = y_point / 2 + 0.15
-    ax.text(mid_x, mid_y, f'r = {radius}', 
-            fontsize=10, ha='center', color='red', weight='bold',
-            bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.7))
     
     # 각도 호 그리기 (0도에서 현재 각도까지)
     arc_radius = 0.3
@@ -209,7 +204,7 @@ with col1:
     # 축 레이블
     ax.set_xlabel('x', fontsize=12, weight='bold')
     ax.set_ylabel('y', fontsize=12, weight='bold')
-    ax.set_title(f"원점 중심 원 (r = {radius:.4f})", fontsize=14, weight="bold")
+    ax.set_title('원점 중심 원', fontsize=14, weight='bold')
 
     st.pyplot(fig, use_container_width=True)
     plt.close()
