@@ -217,7 +217,6 @@ with col1:
     # 축 레이블
     ax.set_xlabel('x', fontsize=12, weight='bold')
     ax.set_ylabel('y', fontsize=12, weight='bold')
-    ax.set_title('원점 중심 원', fontsize=14, weight='bold')
 
     st.pyplot(fig, use_container_width=True)
     plt.close()
@@ -241,14 +240,14 @@ with col2:
     st.markdown('---')
     
     # Sin 값
-    sin_display = format_ratio_string(y_input, radius, y_display, r_display)
+    sin_display = f"{sin_val:.2f}"
     st.markdown('**sin θ = y/r**')
     st.metric(label='sin θ', value=sin_display, delta=f'{y_display}/{r_display}')
     
     st.markdown('---')
     
     # Cos 값
-    cos_display = format_ratio_string(x_input, radius, x_display, r_display)
+    cos_display = f"{cos_val:.2f}"
     st.markdown('**cos θ = x/r**')
     st.metric(label='cos θ', value=cos_display, delta=f'{x_display}/{r_display}')
     
