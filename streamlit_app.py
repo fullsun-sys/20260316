@@ -2,6 +2,7 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Arc
+from fractions import Fraction
 import math
 
 # Set the page configuration
@@ -89,6 +90,19 @@ def format_coordinate(angle_rad, kind):
     value = np.cos(angle_rad) if kind == 'x' else np.sin(angle_rad)
     return f"{value:.4f}"
 
+
+def format_fraction(value):
+    if value is None:
+        return '정의되지 않음'
+    if abs(value) < 1e-8:
+        return '0'
+    fraction = Fraction(value).limit_denominator(100)
+    if abs(float(fraction) - value) < 1e-6:
+        if fraction.denominator == 1:
+            return str(fraction.numerator)
+        return f"{fraction.numerator}/{fraction.denominator}"
+    return f"{value:.2f}"
+
 # 사용자 입력: 좌표
 st.markdown('## 입력 값')
 col_input1, col_input2 = st.columns(2)
@@ -128,9 +142,9 @@ else:
 # 점의 좌표
 x_point = x_input
 y_point = y_input
-x_display = f"{x_input:.4f}"
-y_display = f"{y_input:.4f}"
-r_display = f"{radius:.4f}"
+x_display = f"{x_input:.2f}"
+y_display = f"{y_input:.2f}"
+r_display = f"{radius:.2f}"
 
 # 레이아웃: 왼쪽에 원, 오른쪽에 값
 col1, col2 = st.columns([2, 1])
@@ -188,7 +202,7 @@ with col1:
     text_radius = 0.5
     text_angle = theta_rad / 2
     ax.text(text_radius * np.cos(text_angle), text_radius * np.sin(text_angle),
-            f'$\\theta = {angle_pi_display}$\n({theta_deg:.1f}°)', 
+            f'theta = {angle_pi_display}\n({theta_deg:.2f} degrees)', 
             fontsize=10, color='purple', weight='bold',
             bbox=dict(boxstyle='round,pad=0.4', facecolor='yellow', alpha=0.7))
     
@@ -206,7 +220,7 @@ with col2:
     # 현재 각도 정보
     st.markdown(f'#### 각도: {angle_pi_display}')
     if radius > 1e-8:
-        st.markdown(f'({theta_deg:.1f}° = {theta_rad:.3f} rad)')
+        st.markdown(f'({theta_deg:.2f}° = {theta_rad:.2f} rad)')
     else:
         st.markdown('(원점 입력 시 각도는 정의되지 않습니다)')
     st.markdown('---')
@@ -219,14 +233,14 @@ with col2:
     st.markdown('---')
     
     # Sin 값
-    sin_display = f"{sin_val:.4f}"
+    sin_display = format_fraction(sin_val)
     st.markdown('**sin θ = y/r**')
     st.metric(label='sin θ', value=sin_display, delta=f'{y_display}/{r_display}')
     
     st.markdown('---')
     
     # Cos 값
-    cos_display = f"{cos_val:.4f}"
+    cos_display = format_fraction(cos_val)
     st.markdown('**cos θ = x/r**')
     st.metric(label='cos θ', value=cos_display, delta=f'{x_display}/{r_display}')
     
@@ -237,7 +251,8 @@ with col2:
     if tan_val is None:
         st.metric(label='tan θ', value='정의되지 않음', delta='x = 0')
     else:
-        st.metric(label='tan θ', value=f"{tan_val:.4f}", delta=f'{y_display}/{x_display}')
+        tan_display = format_fraction(tan_val)
+        st.metric(label='tan θ', value=tan_display, delta=f'{y_display}/{x_display}')
 
 # 설명 섹션
 st.markdown('---')
