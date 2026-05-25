@@ -103,6 +103,17 @@ def format_fraction(value):
         return f"{fraction.numerator}/{fraction.denominator}"
     return f"{value:.2f}"
 
+def format_ratio_string(numerator, denominator, numerator_display, denominator_display):
+    if abs(denominator) < 1e-8:
+        return '정의되지 않음'
+    ratio = numerator / denominator
+    fraction = Fraction(ratio).limit_denominator(100)
+    if abs(float(fraction) - ratio) < 1e-6:
+        if fraction.denominator == 1:
+            return str(fraction.numerator)
+        return f"{fraction.numerator}/{fraction.denominator}"
+    return f"{numerator_display}/{denominator_display}"
+
 # 사용자 입력: 좌표
 st.markdown('## 입력 값')
 col_input1, col_input2 = st.columns(2)
@@ -121,10 +132,12 @@ if radius > 1e-8:
         theta_rad += 2 * np.pi
     theta_deg = np.degrees(theta_rad)
     angle_pi_display = format_angle_as_pi(theta_rad)
+    angle_ascii_display = angle_pi_display.replace('π', 'pi').replace('θ', 'theta')
 else:
     theta_rad = 0.0
     theta_deg = 0.0
     angle_pi_display = '정의되지 않음'
+    angle_ascii_display = 'undefined'
 
 # 삼각함수 값 계산
 if radius > 1e-8:
@@ -197,7 +210,7 @@ with col1:
     text_radius = 0.5
     text_angle = theta_rad / 2
     ax.text(text_radius * np.cos(text_angle), text_radius * np.sin(text_angle),
-            f'theta = {angle_pi_display}\n({theta_deg:.2f} degrees)', 
+            f'theta = {angle_ascii_display}\n({theta_deg:.2f} degrees)', 
             fontsize=10, color='purple', weight='bold',
             bbox=dict(boxstyle='round,pad=0.4', facecolor='yellow', alpha=0.7))
     
@@ -228,14 +241,14 @@ with col2:
     st.markdown('---')
     
     # Sin 값
-    sin_display = format_fraction(sin_val)
+    sin_display = format_ratio_string(y_input, radius, y_display, r_display)
     st.markdown('**sin θ = y/r**')
     st.metric(label='sin θ', value=sin_display, delta=f'{y_display}/{r_display}')
     
     st.markdown('---')
     
     # Cos 값
-    cos_display = format_fraction(cos_val)
+    cos_display = format_ratio_string(x_input, radius, x_display, r_display)
     st.markdown('**cos θ = x/r**')
     st.metric(label='cos θ', value=cos_display, delta=f'{x_display}/{r_display}')
     
