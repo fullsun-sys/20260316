@@ -204,9 +204,10 @@ with col1:
             bbox=dict(boxstyle='round,pad=0.4', facecolor='yellow', alpha=0.7))
     
     # 축 레이블
-    ax.set_xlabel(r'$\\cos\\theta$ (x)', fontsize=12, weight='bold')
-    ax.set_ylabel(r'$\\sin\\theta$ (y)', fontsize=12, weight='bold')
-    ax.set_title('Unit circle (radius = 1)', fontsize=14, weight='bold')
+    ax.set_xlabel(r"$\cos\theta$ (x)", fontsize=12, weight="bold")
+    ax.set_ylabel(r"$\sin\theta$ (y)", fontsize=12, weight="bold")
+    ax.set_title("Unit circle (radius = 1)", fontsize=14, weight="bold")
+
     
     # 좌표축 표시
     ax.text(1.2, -0.1, 'x (cos)', fontsize=11, weight='bold')
