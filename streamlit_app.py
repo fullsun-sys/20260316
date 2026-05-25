@@ -11,7 +11,7 @@ st.set_page_config(
     layout='wide'
 )
 
-st.title('📐 단위원으로 배우는 삼각함수')
+st.title('📐 삼각비로 배우는 삼각함수')
 st.markdown('**고등학교 수학 - 삼각함수 기초**')
 st.markdown('---')
 
@@ -89,60 +89,48 @@ def format_coordinate(angle_rad, kind):
     value = np.cos(angle_rad) if kind == 'x' else np.sin(angle_rad)
     return f"{value:.4f}"
 
-# 표준 각도 프리셋
-angle_presets = [
-    ('0', 0),
-    ('π/6 (30°)', np.pi / 6),
-    ('π/4 (45°)', np.pi / 4),
-    ('π/3 (60°)', np.pi / 3),
-    ('π/2 (90°)', np.pi / 2),
-    ('2π/3 (120°)', 2 * np.pi / 3),
-    ('3π/4 (135°)', 3 * np.pi / 4),
-    ('5π/6 (150°)', 5 * np.pi / 6),
-    ('π (180°)', np.pi),
-    ('7π/6 (210°)', 7 * np.pi / 6),
-    ('5π/4 (225°)', 5 * np.pi / 4),
-    ('4π/3 (240°)', 4 * np.pi / 3),
-    ('3π/2 (270°)', 3 * np.pi / 2),
-    ('5π/3 (300°)', 5 * np.pi / 3),
-    ('7π/4 (315°)', 7 * np.pi / 4),
-    ('11π/6 (330°)', 11 * np.pi / 6),
-    ('2π (360°)', 2 * np.pi)
-]
+# 사용자 입력: 좌표
+st.markdown('## 입력 값')
+col_input1, col_input2 = st.columns(2)
+with col_input1:
+    x_input = st.number_input('x 좌표 입력', value=1.0, step=0.1, format='%.4f')
+with col_input2:
+    y_input = st.number_input('y 좌표 입력', value=0.5, step=0.1, format='%.4f')
 
-preset_labels = [label for label, value in angle_presets]
-selected_preset = st.selectbox('자주 쓰는 각도 선택', preset_labels, index=2)
-selected_angle = dict(angle_presets)[selected_preset]
-
-# 슬라이더 - 각도 선택 (0~2π)
-theta_rad = st.slider(
-    '각도 선택 (0~2π)',
-    min_value=0.0,
-    max_value=2 * np.pi,
-    value=selected_angle,
-    step=0.01,
-    format='%.2f'
-)
-
-# 파이 형태로 표시
-angle_pi_display = format_angle_as_pi(theta_rad)
-st.markdown(f"### 선택된 각도: **{angle_pi_display}** ({np.degrees(theta_rad):.1f}°)")
+st.markdown('입력한 좌표에 대해 원점이 (0,0)인 원을 그리고, r = √(x² + y²)로 계산된 반지름과 함께 삼각함수 값을 표시합니다.')
 st.markdown('---')
 
-# 라디안을 도로 변환
-theta_deg = np.degrees(theta_rad)
+radius = np.hypot(x_input, y_input)
+if radius > 1e-8:
+    theta_rad = np.arctan2(y_input, x_input)
+    if theta_rad < 0:
+        theta_rad += 2 * np.pi
+    theta_deg = np.degrees(theta_rad)
+    angle_pi_display = format_angle_as_pi(theta_rad)
+else:
+    theta_rad = 0.0
+    theta_deg = 0.0
+    angle_pi_display = '정의되지 않음'
 
 # 삼각함수 값 계산
-sin_val = np.sin(theta_rad)
-cos_val = np.cos(theta_rad)
-tan_val = np.tan(theta_rad)
-radius = 1
+if radius > 1e-8:
+    sin_val = y_input / radius
+    cos_val = x_input / radius
+else:
+    sin_val = 0.0
+    cos_val = 0.0
 
-# 점의 좌표 (원 위의 점)
-x_point = radius * cos_val
-y_point = radius * sin_val
-x_display = format_coordinate(theta_rad, 'x')
-y_display = format_coordinate(theta_rad, 'y')
+if abs(x_input) > 1e-8:
+    tan_val = y_input / x_input
+else:
+    tan_val = None
+
+# 점의 좌표
+x_point = x_input
+y_point = y_input
+x_display = f"{x_input:.4f}"
+y_display = f"{y_input:.4f}"
+r_display = f"{radius:.4f}"
 
 # 레이아웃: 왼쪽에 원, 오른쪽에 값
 col1, col2 = st.columns([2, 1])
@@ -152,15 +140,16 @@ with col1:
     fig, ax = plt.subplots(figsize=(6.5, 6.5))
     
     # 축 설정
-    ax.set_xlim(-1.3, 1.3)
-    ax.set_ylim(-1.3, 1.3)
+    axis_limit = max(1.5, abs(x_point), abs(y_point), radius) * 1.2
+    ax.set_xlim(-axis_limit, axis_limit)
+    ax.set_ylim(-axis_limit, axis_limit)
     ax.set_aspect('equal')
     ax.axhline(y=0, color='k', linewidth=0.8)
     ax.axvline(x=0, color='k', linewidth=0.8)
     ax.grid(True, alpha=0.3)
     
-    # 단위원 그리기
-    circle = plt.Circle((0, 0), 1, color='blue', fill=False, linewidth=2)
+    # 원 그리기
+    circle = plt.Circle((0, 0), radius, color='blue', fill=False, linewidth=2)
     ax.add_patch(circle)
     
     # 원 위의 점 표시
@@ -204,15 +193,10 @@ with col1:
             bbox=dict(boxstyle='round,pad=0.4', facecolor='yellow', alpha=0.7))
     
     # 축 레이블
-    ax.set_xlabel(r"$\cos\theta$ (x)", fontsize=12, weight="bold")
-    ax.set_ylabel(r"$\sin\theta$ (y)", fontsize=12, weight="bold")
-    ax.set_title("Unit circle (radius = 1)", fontsize=14, weight="bold")
+    ax.set_xlabel('x', fontsize=12, weight='bold')
+    ax.set_ylabel('y', fontsize=12, weight='bold')
+    ax.set_title(f"원점 중심 원 (r = {radius:.4f})", fontsize=14, weight="bold")
 
-    
-    # 좌표축 표시
-    ax.text(1.2, -0.1, 'x (cos)', fontsize=11, weight='bold')
-    ax.text(-0.15, 1.2, 'y (sin)', fontsize=11, weight='bold')
-    
     st.pyplot(fig, use_container_width=True)
     plt.close()
 
@@ -221,39 +205,39 @@ with col2:
     
     # 현재 각도 정보
     st.markdown(f'#### 각도: {angle_pi_display}')
-    st.markdown(f'({theta_deg:.1f}° = {theta_rad:.3f} rad)')
+    if radius > 1e-8:
+        st.markdown(f'({theta_deg:.1f}° = {theta_rad:.3f} rad)')
+    else:
+        st.markdown('(원점 입력 시 각도는 정의되지 않습니다)')
     st.markdown('---')
     
     # 직각삼각형 정보
-    x_display = format_coordinate(theta_rad, 'x')
-    y_display = format_coordinate(theta_rad, 'y')
     st.markdown('### 📐 직각삼각형 정보')
-    st.markdown(f'**x (가로) = {x_display} ({x_point:.4f})**')
-    st.markdown(f'**y (세로) = {y_display} ({y_point:.4f})**')
-    st.markdown(f'**r (빗변/반지름) = 1**')
+    st.markdown(f'**x = {x_display}**')
+    st.markdown(f'**y = {y_display}**')
+    st.markdown(f'**r = {r_display}**')
     st.markdown('---')
     
     # Sin 값
-    sin_display = format_trig_value(theta_rad, 'sin')
+    sin_display = f"{sin_val:.4f}"
     st.markdown('**sin θ = y/r**')
-    st.metric(label='sin θ', value=sin_display, delta=f'{y_display}/1')
+    st.metric(label='sin θ', value=sin_display, delta=f'{y_display}/{r_display}')
     
     st.markdown('---')
     
     # Cos 값
-    cos_display = format_trig_value(theta_rad, 'cos')
+    cos_display = f"{cos_val:.4f}"
     st.markdown('**cos θ = x/r**')
-    st.metric(label='cos θ', value=cos_display, delta=f'{x_display}/1')
+    st.metric(label='cos θ', value=cos_display, delta=f'{x_display}/{r_display}')
     
     st.markdown('---')
     
     # Tan 값
-    tan_display = format_trig_value(theta_rad, 'tan')
     st.markdown('**tan θ = y/x**')
-    if tan_display == '정의되지 않음':
-        st.metric(label='tan θ', value=tan_display, delta='x = 0')
+    if tan_val is None:
+        st.metric(label='tan θ', value='정의되지 않음', delta='x = 0')
     else:
-        st.metric(label='tan θ', value=tan_display, delta=f'{y_display}/{x_display}')
+        st.metric(label='tan θ', value=f"{tan_val:.4f}", delta=f'{y_display}/{x_display}')
 
 # 설명 섹션
 st.markdown('---')
@@ -264,17 +248,15 @@ col_info1, col_info2, col_info3 = st.columns(3)
 with col_info1:
     st.markdown('**sin θ (사인)**')
     st.markdown('- 높이 / 빗변')
-    st.markdown('- 단위원에서 **y 좌표**')
-    st.markdown('- 범위: [-1, 1]')
+    st.markdown('- 좌표평면에서 **y / r**')
 
 with col_info2:
     st.markdown('**cos θ (코사인)**')
-    st.markdown('- 빗변 / 밑변')
-    st.markdown('- 단위원에서 **x 좌표**')
-    st.markdown('- 범위: [-1, 1]')
+    st.markdown('- 밑변 / 빗변')
+    st.markdown('- 좌표평면에서 **x / r**')
 
 with col_info3:
     st.markdown('**tan θ (탄젠트)**')
     st.markdown('- 높이 / 밑변')
-    st.markdown('- **y/x** (sin/cos)')
-    st.markdown('- cos θ = 0일 때 정의되지 않음')
+    st.markdown('- **y / x**')
+    st.markdown('- cos θ = 0이면 x = 0')
