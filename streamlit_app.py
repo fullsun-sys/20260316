@@ -239,9 +239,10 @@ with col1:
             fontsize=7, color='purple', weight='bold', ha=ha, va=va,
             bbox=dict(boxstyle='round,pad=0.2', facecolor='yellow', alpha=0.7))
     
-    # 축 레이블 (오른쪽 x축, 위쪽 y축만 표시)
-    ax.text(axis_limit * 0.98, 0.0, 'x', fontsize=14, weight='bold', ha='left', va='center')
-    ax.text(0.0, axis_limit * 0.98, 'y', fontsize=14, weight='bold', ha='center', va='bottom')
+    # 축 라벨 (x축: 오른쪽 가운데, y축: 위쪽 가운데, 선과 겹치지 않게)
+    label_offset = axis_limit * 0.05
+    ax.text(axis_limit * 0.95, label_offset, 'x', fontsize=14, weight='bold', ha='center', va='bottom')
+    ax.text(label_offset, axis_limit * 0.95, 'y', fontsize=14, weight='bold', ha='left', va='center')
 
     st.pyplot(fig, use_container_width=True)
     plt.close()
