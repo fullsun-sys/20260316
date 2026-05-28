@@ -190,13 +190,29 @@ with col1:
     # 직각삼각형 표시
     ax.plot([x_point, x_point], [0, y_point], 'g--', linewidth=2)
     ax.plot([0, x_point], [y_point, y_point], 'orange', linestyle='--', linewidth=2)
-    # 직각삼각형의 변 라벨 위치 조정: x를 오른쪽 사이드, y를 위쪽으로 표시
-    ax.text(axis_limit * 0.95, 0.0, f'x = {x_display}', 
-            fontsize=10, ha='left', va='center', color='orange', weight='bold',
-            bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.7))
-    ax.text(0.0, axis_limit * 0.95, f'y = {y_display}', 
-            fontsize=10, ha='center', va='bottom', color='green', weight='bold',
-            bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.7))
+    # 직각삼각형의 변에 값을 라벨로 추가 (밑변과 높이 옆에 배치, 삼각형과 겹치지 않게)
+    offset = axis_limit * 0.06
+    # 밑변(x) 레이블: 밑변 중앙, y 위치는 삼각형과 겹치지 않게 아래/위로 약간 이동
+    if y_point >= 0:
+        base_y = -offset
+        base_va = 'top'
+    else:
+        base_y = offset
+        base_va = 'bottom'
+    ax.text(x_point / 2, base_y, f'x = {x_display}',
+            fontsize=10, ha='center', va=base_va, color='orange', weight='bold',
+            bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.9))
+
+    # 높이(y) 레이블: 높이 중앙, x 위치는 삼각형과 겹치지 않게 좌/우로 약간 이동
+    if x_point >= 0:
+        side_x = x_point + offset
+        side_ha = 'left'
+    else:
+        side_x = x_point - offset
+        side_ha = 'right'
+    ax.text(side_x, y_point / 2, f'y = {y_display}',
+            fontsize=10, ha=side_ha, va='center', color='green', weight='bold',
+            bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.9))
     
     # 각도 호 그리기 (0도에서 현재 각도까지)
     arc_radius = 0.3
