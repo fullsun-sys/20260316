@@ -190,13 +190,12 @@ with col1:
     # 직각삼각형 표시
     ax.plot([x_point, x_point], [0, y_point], 'g--', linewidth=2)
     ax.plot([0, x_point], [y_point, y_point], 'orange', linestyle='--', linewidth=2)
-    
-    # 직각삼각형의 변에 값을 라벨로 추가
-    ax.text(x_point / 2, y_point + 0.15, f'x = {x_display}', 
-            fontsize=10, ha='center', color='orange', weight='bold',
+    # 직각삼각형의 변 라벨 위치 조정: x를 오른쪽 사이드, y를 위쪽으로 표시
+    ax.text(axis_limit * 0.95, 0.0, f'x = {x_display}', 
+            fontsize=10, ha='left', va='center', color='orange', weight='bold',
             bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.7))
-    ax.text(x_point + 0.2, y_point / 2, f'y = {y_display}', 
-            fontsize=10, ha='left', color='green', weight='bold',
+    ax.text(0.0, axis_limit * 0.95, f'y = {y_display}', 
+            fontsize=10, ha='center', va='bottom', color='green', weight='bold',
             bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.7))
     
     # 각도 호 그리기 (0도에서 현재 각도까지)
@@ -217,6 +216,9 @@ with col1:
     # 축 레이블
     ax.set_xlabel('x', fontsize=12, weight='bold')
     ax.set_ylabel('y', fontsize=12, weight='bold')
+    # 축 레이블 위치를 그래프 오른쪽( x )과 위쪽( y )에 시각적으로 표시
+    ax.text(axis_limit * 0.98, 0.0, 'x', fontsize=11, weight='bold', ha='left', va='center')
+    ax.text(0.0, axis_limit * 0.98, 'y', fontsize=11, weight='bold', ha='center', va='bottom')
 
     st.pyplot(fig, use_container_width=True)
     plt.close()
@@ -281,4 +283,4 @@ with col_info3:
     st.markdown('**tan θ (탄젠트)**')
     st.markdown('- 높이 / 밑변')
     st.markdown('- **y / x**')
-    st.markdown('- cos θ = 0이면 x = 0')
+    st.markdown('- 밑변(x)=0일 때 정의되지 않음')
