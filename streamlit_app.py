@@ -221,13 +221,13 @@ with col1:
                     color='purple', linewidth=2)
     ax.add_patch(angle_arc)
     
-    # 각도 텍스트 추가 (삼각형과 겹치지 않게 바깥쪽으로 약간 이동)
-    text_radius = 0.5
+    # 각도 텍스트 추가 (삼각형과 겹치지 않게 바깥쪽으로 배치)
+    text_radius = 0.8
     text_angle = theta_rad / 2
     tx = text_radius * np.cos(text_angle)
     ty = text_radius * np.sin(text_angle)
     # 사분면 방향으로 바깥쪽 오프셋 적용
-    offs = axis_limit * 0.06
+    offs = axis_limit * 0.1
     sign_x = np.sign(np.cos(text_angle)) if np.cos(text_angle) != 0 else 1.0
     sign_y = np.sign(np.sin(text_angle)) if np.sin(text_angle) != 0 else 1.0
     label_x = tx + offs * sign_x
@@ -240,8 +240,8 @@ with col1:
             bbox=dict(boxstyle='round,pad=0.4', facecolor='yellow', alpha=0.7))
     
     # 축 레이블
-    ax.set_xlabel('x', fontsize=12, weight='bold')
-    ax.set_ylabel('y', fontsize=12, weight='bold')
+    ax.set_xlabel('x', fontsize=14, weight='bold')
+    ax.set_ylabel('y', fontsize=14, weight='bold')
     # 축 레이블 위치를 그래프 오른쪽( x )과 위쪽( y )에 시각적으로 표시
     ax.text(axis_limit * 0.98, 0.0, 'x', fontsize=11, weight='bold', ha='left', va='center')
     ax.text(0.0, axis_limit * 0.98, 'y', fontsize=11, weight='bold', ha='center', va='bottom')
