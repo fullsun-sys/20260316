@@ -117,10 +117,27 @@ def format_ratio_string(numerator, denominator, numerator_display, denominator_d
 # 사용자 입력: 좌표
 st.markdown('## 입력 값')
 col_input1, col_input2 = st.columns(2)
+
+def parse_input(input_str, default_value):
+    """입력 문자열을 숫자로 변환. ^ 기호는 ** 로 변환하여 거듭제곱 계산"""
+    if not input_str or input_str.strip() == '':
+        return default_value
+    try:
+        # ^ 를 ** 로 변환 (루트 표현: x^(1/2) = sqrt(x))
+        expression = input_str.replace('^', '**')
+        # 안전한 평가를 위해 math 모듈의 함수들만 허용
+        result = eval(expression, {'__builtins__': {}}, {'sqrt': np.sqrt, 'pi': np.pi})
+        return float(result)
+    except:
+        return default_value
+
 with col_input1:
-    x_input = st.number_input('x 좌표 입력', value=1.0, step=0.1, format='%.4f')
+    x_input_str = st.text_input('x 좌표 입력 (예: 1, 2^(1/2), sqrt(3))', value='1')
+    x_input = parse_input(x_input_str, 1.0)
+
 with col_input2:
-    y_input = st.number_input('y 좌표 입력', value=0.5, step=0.1, format='%.4f')
+    y_input_str = st.text_input('y 좌표 입력 (예: 0.5, 3^(1/2), sqrt(2))', value='0.5')
+    y_input = parse_input(y_input_str, 0.5)
 
 st.markdown('입력한 좌표에 대해 원점이 (0,0)인 원을 그리고, r = √(x² + y²)로 계산된 반지름과 함께 삼각함수 값을 표시합니다.')
 st.markdown('---')
