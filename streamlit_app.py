@@ -221,12 +221,22 @@ with col1:
                     color='purple', linewidth=2)
     ax.add_patch(angle_arc)
     
-    # 각도 텍스트 추가
+    # 각도 텍스트 추가 (삼각형과 겹치지 않게 바깥쪽으로 약간 이동)
     text_radius = 0.5
     text_angle = theta_rad / 2
-    ax.text(text_radius * np.cos(text_angle), text_radius * np.sin(text_angle),
-            f'theta = {angle_ascii_display}\n({theta_deg:.2f} degrees)', 
-            fontsize=10, color='purple', weight='bold',
+    tx = text_radius * np.cos(text_angle)
+    ty = text_radius * np.sin(text_angle)
+    # 사분면 방향으로 바깥쪽 오프셋 적용
+    offs = axis_limit * 0.06
+    sign_x = np.sign(np.cos(text_angle)) if np.cos(text_angle) != 0 else 1.0
+    sign_y = np.sign(np.sin(text_angle)) if np.sin(text_angle) != 0 else 1.0
+    label_x = tx + offs * sign_x
+    label_y = ty + offs * sign_y
+    ha = 'left' if sign_x >= 0 else 'right'
+    va = 'bottom' if sign_y >= 0 else 'top'
+    ax.text(label_x, label_y,
+            f'theta = {angle_ascii_display}\n({theta_deg:.2f} degrees)',
+            fontsize=10, color='purple', weight='bold', ha=ha, va=va,
             bbox=dict(boxstyle='round,pad=0.4', facecolor='yellow', alpha=0.7))
     
     # 축 레이블
