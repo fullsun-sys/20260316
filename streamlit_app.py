@@ -39,21 +39,21 @@ standard_angles = [
 
 exact_trig_values = {
     '0': {'sin': '0', 'cos': '1', 'tan': '0', 'x': '1', 'y': '0'},
-    'π/6': {'sin': '1/2', 'cos': '√3/2', 'tan': '1/√3', 'x': '√3/2', 'y': '1/2'},
+    'π/6': {'sin': '1/2', 'cos': '√3/2', 'tan': '√3/3', 'x': '√3/2', 'y': '1/2'},
     'π/4': {'sin': '√2/2', 'cos': '√2/2', 'tan': '1', 'x': '√2/2', 'y': '√2/2'},
     'π/3': {'sin': '√3/2', 'cos': '1/2', 'tan': '√3', 'x': '1/2', 'y': '√3/2'},
     'π/2': {'sin': '1', 'cos': '0', 'tan': '정의되지 않음', 'x': '0', 'y': '1'},
     '2π/3': {'sin': '√3/2', 'cos': '-1/2', 'tan': '-√3', 'x': '-1/2', 'y': '√3/2'},
     '3π/4': {'sin': '√2/2', 'cos': '-√2/2', 'tan': '-1', 'x': '-√2/2', 'y': '√2/2'},
-    '5π/6': {'sin': '1/2', 'cos': '-√3/2', 'tan': '-1/√3', 'x': '-√3/2', 'y': '1/2'},
+    '5π/6': {'sin': '1/2', 'cos': '-√3/2', 'tan': '-√3/3', 'x': '-√3/2', 'y': '1/2'},
     'π': {'sin': '0', 'cos': '-1', 'tan': '0', 'x': '-1', 'y': '0'},
-    '7π/6': {'sin': '-1/2', 'cos': '-√3/2', 'tan': '1/√3', 'x': '-√3/2', 'y': '-1/2'},
+    '7π/6': {'sin': '-1/2', 'cos': '-√3/2', 'tan': '√3/3', 'x': '-√3/2', 'y': '-1/2'},
     '5π/4': {'sin': '-√2/2', 'cos': '-√2/2', 'tan': '1', 'x': '-√2/2', 'y': '-√2/2'},
     '4π/3': {'sin': '-√3/2', 'cos': '-1/2', 'tan': '√3', 'x': '-1/2', 'y': '-√3/2'},
     '3π/2': {'sin': '-1', 'cos': '0', 'tan': '정의되지 않음', 'x': '0', 'y': '-1'},
     '5π/3': {'sin': '-√3/2', 'cos': '1/2', 'tan': '-√3', 'x': '1/2', 'y': '-√3/2'},
     '7π/4': {'sin': '-√2/2', 'cos': '√2/2', 'tan': '-1', 'x': '√2/2', 'y': '-√2/2'},
-    '11π/6': {'sin': '-1/2', 'cos': '√3/2', 'tan': '-1/√3', 'x': '√3/2', 'y': '-1/2'},
+    '11π/6': {'sin': '-1/2', 'cos': '√3/2', 'tan': '-√3/3', 'x': '√3/2', 'y': '-1/2'},
     '2π': {'sin': '0', 'cos': '1', 'tan': '0', 'x': '1', 'y': '0'}
 }
 
@@ -102,6 +102,16 @@ def format_fraction(value):
             return str(fraction.numerator)
         return f"{fraction.numerator}/{fraction.denominator}"
     return f"{value:.2f}"
+
+def format_trig_display(angle_rad, kind):
+    """표준 각도이면 정확한 값, 아니면 근사 분수로 표시"""
+    label = find_standard_angle(angle_rad)
+    if label is not None:
+        return exact_trig_values[label][kind]
+    
+    # 표준 각도가 아니면 수치 값으로 근사
+    value = np.sin(angle_rad) if kind == 'sin' else np.cos(angle_rad) if kind == 'cos' else np.tan(angle_rad)
+    return format_fraction(value)
 
 def format_ratio_string(numerator, denominator, numerator_display, denominator_display):
     if abs(denominator) < 1e-8:
@@ -301,14 +311,14 @@ with col2:
     st.markdown('---')
     
     # Sin 값
-    sin_display = f"{sin_val:.2f}"
+    sin_display = format_trig_display(theta_rad, 'sin')
     st.markdown('**sin θ = y/r**')
     st.metric(label='sin θ', value=sin_display, delta=f'{y_display}/{r_display}')
     
     st.markdown('---')
     
     # Cos 값
-    cos_display = f"{cos_val:.2f}"
+    cos_display = format_trig_display(theta_rad, 'cos')
     st.markdown('**cos θ = x/r**')
     st.metric(label='cos θ', value=cos_display, delta=f'{x_display}/{r_display}')
     
@@ -319,7 +329,7 @@ with col2:
     if tan_val is None:
         st.metric(label='tan θ', value='정의되지 않음', delta='x = 0')
     else:
-        tan_display = format_fraction(tan_val)
+        tan_display = format_trig_display(theta_rad, 'tan')
         st.metric(label='tan θ', value=tan_display, delta=f'{y_display}/{x_display}')
 
 # 설명 섹션
