@@ -131,6 +131,25 @@ def parse_input(input_str, default_value):
     except:
         return default_value
 
+def format_with_sqrt(input_str):
+    """입력 문자열을 루트 기호(√)로 표시"""
+    import re
+    
+    # 숫자만 있으면 그대로 반환
+    try:
+        num = float(input_str)
+        return f"{num:.2f}"
+    except:
+        pass
+    
+    # x^(1/2) 형식을 √x로 변환
+    result = re.sub(r'(\d+(?:\.\d+)?)\^\(1/2\)', r'√\1', input_str)
+    
+    # sqrt(x) 형식을 √x로 변환
+    result = re.sub(r'sqrt\s*\(\s*(\d+(?:\.\d+)?)\s*\)', r'√\1', result)
+    
+    return result
+
 with col_input1:
     x_input_str = st.text_input('x 좌표 입력 (예: 1, 2^(1/2), sqrt(3))', value='1')
     x_input = parse_input(x_input_str, 1.0)
@@ -172,8 +191,8 @@ else:
 # 점의 좌표
 x_point = x_input
 y_point = y_input
-x_display = f"{x_input:.2f}"
-y_display = f"{y_input:.2f}"
+x_display = format_with_sqrt(x_input_str)
+y_display = format_with_sqrt(y_input_str)
 r_display = f"{radius:.2f}"
 
 # 레이아웃: 왼쪽에 원, 오른쪽에 값
