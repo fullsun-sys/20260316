@@ -175,11 +175,12 @@ with col1:
     ax.plot([0, x_point], [y_point, y_point], 'orange', linestyle='--', linewidth=2)
     
     # 직각삼각형의 변에 값을 라벨로 추가
-    ax.text(x_point / 2, y_point + 0.15, f'x = {x_display}', 
-            fontsize=10, ha='center', color='orange', weight='bold',
+        # 직각삼각형의 변 라벨 위치 조정: x를 오른쪽 사이드, y를 위쪽으로
+        ax.text(1.05, 0.0, f'x = {x_display}', 
+            fontsize=10, ha='left', va='center', color='orange', weight='bold',
             bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.7))
-    ax.text(x_point + 0.2, y_point / 2, f'y = {y_display}', 
-            fontsize=10, ha='left', color='green', weight='bold',
+        ax.text(0.0, 1.05, f'y = {y_display}', 
+            fontsize=10, ha='center', va='bottom', color='green', weight='bold',
             bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.7))
     mid_x = x_point / 2 - 0.15
     mid_y = y_point / 2 + 0.15
