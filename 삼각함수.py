@@ -207,9 +207,9 @@ with col1:
     ax.set_ylabel(r'$\sin\theta$ (y)', fontsize=12, weight='bold')
     ax.set_title('Unit circle (radius = 1)', fontsize=14, weight='bold')
     
-    # 좌표축 표시
-    ax.text(1.2, -0.1, 'x (cos)', fontsize=11, weight='bold')
-    ax.text(-0.15, 1.2, 'y (sin)', fontsize=11, weight='bold')
+    # 좌표축 표시 (x를 오른쪽, y를 위쪽으로 이동)
+    ax.text(1.25, 0.0, 'x (cos)', fontsize=11, weight='bold', va='center', ha='left')
+    ax.text(0.0, 1.25, 'y (sin)', fontsize=11, weight='bold', va='bottom', ha='center')
     
     st.pyplot(fig, use_container_width=True)
     plt.close()
@@ -275,4 +275,4 @@ with col_info3:
     st.markdown('**tan θ (탄젠트)**')
     st.markdown('- 높이 / 밑변')
     st.markdown('- **y/x** (sin/cos)')
-    st.markdown('- cos θ = 0일 때 정의되지 않음')
+    st.markdown('- 밑변(x)=0일 때 정의되지 않음')
